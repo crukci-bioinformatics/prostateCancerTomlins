@@ -1,0 +1,13 @@
+Package: prostateCancerTomlins
+Type: Package
+Title: Prostate Cancer Data
+Version: 0.0.99
+Date: 2015-09-10
+Author: Mark Dunning
+Maintainer: Mark Dunning <mark.dunning@cruk.cam.ac.uk>
+Description: A Bioconductor data package for the Tomlins (2004) et al dataset
+License: Artistic-2.0
+LazyData: TRUE
+Depends: Biobase, R (>= 2.10) 
+Suggests: GEOquery
+biocViews: ExperimentData, ExpressionData,GEO, MicroarrayData, CancerData, ProstateCancerData

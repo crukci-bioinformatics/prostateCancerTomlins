@@ -1,0 +1,53 @@
+%\VignetteKeywords{Database}
+%\VignetteDepends{prostateCancerSboner}
+%\VignettePackage{prostateCancerSboner}
+%\VignetteIndexEntry{prostateCancerSboner}
+\documentclass{article}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\emph{ Integrative molecular concept modeling of prostate cancer progression}
+
+\emph{Tomlins SA, Mehra R, Rhodes DR, Cao X et al. Integrative molecular concept modeling of prostate cancer progression. Nat Genet 2007 Jan;39(1):41-51. PMID: 17173048 }
+
+
+In this document, I describe how the GEO data entry for the Tomlins data was processed and saved into an object for analysis in Bioconductor. First of all load the relevant libraries for grabbing and manipulaing the data
+
+<<eval=FALSE>>=
+library(GEOquery)
+@
+
+
+Now use the `getGEO` function with the correct ID
+
+<<eval=FALSE>>=
+geoData <- getGEO("GSE6099")[[1]]
+geoData
+@
+
+The phenoData contains lots of metadata from GEO that probably won't be useful for our analysis and needs cleaning-up. 
+
+<<eval=FALSE>>=
+library(tidyr)
+pd <- pData(geoData)
+
+covars <- data.frame(Sample = pd$title,pd$geo_accession, Characteristics = pd$characteristics_ch1)
+covars <- separate(covars, Sample,into="Sample_Group",remove=FALSE)
+pData(geoData) <- covars
+
+@
+
+The data were generate on a non-commerical spotted array(!), so we use some converted IDs.
+
+<<>>=
+library(dplyr)
+features <- read.csv("inst/extdata/IDconverterResults06157.csv") %>% 
+    mutate(CLONE_ID = Clone_ID)
+fData(geoData) <- left_join(fData(geoData),features)
+tomlins <- geoData
+save(tomlins, file="data/tomlins.rda",compress="xz")
+@
+
+
+\end{document}
